@@ -23,8 +23,8 @@ ORG 0x0
 CurrEl: WORD 0x7c8
 N: WORD 4
 I: WORD 0x1
-MaxConst: WORD 247
-MinConst: WORD 0xFEF8
+MaxConst: WORD 0x01FF
+MinConst: WORD 0xFE00
 ElseCount: WORD 0x12C
 MaxEl: WORD 0x8000
 
