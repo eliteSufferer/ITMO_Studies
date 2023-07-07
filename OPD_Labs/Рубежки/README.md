@@ -5,6 +5,6 @@
 - Основная волна рубежки второго семестра: написание программы на Ассемблере (примеры кода и тренировочные задания находятся в файлах выше)
 - Перепись рубежки второго семестра: трассировка микрокоманд. Тренажеры:
     -
-[Тренажер 1 (подходит набить руку, но не до конца совпадает с реальным форматом)](https://dima.mysoftware.ru/bcomp/MicroProgramTracingBasicComputer.html)https://dima.mysoftware.ru/bcomp/MicroProgramTracingBasicComputer.html
+[Тренажер 1 (подходит набить руку, но не до конца совпадает с реальным форматом)](https://dima.mysoftware.ru/bcomp/MicroProgramTracingBasicComputer.html)
     -
-[Тренажер 2 (точно совпадающий с реальным форматом)](https://docs.google.com/spreadsheets/d/1o48u14qvOxD4vGj8GKwhTaU_V9k2HqpNV8Ys4oXJqbM/edit#gid=515233452)https://docs.google.com/spreadsheets/d/1o48u14qvOxD4vGj8GKwhTaU_V9k2HqpNV8Ys4oXJqbM/edit#gid=515233452
+[Тренажер 2 (точно совпадающий с реальным форматом)](https://docs.google.com/spreadsheets/d/1o48u14qvOxD4vGj8GKwhTaU_V9k2HqpNV8Ys4oXJqbM/edit#gid=515233452)
