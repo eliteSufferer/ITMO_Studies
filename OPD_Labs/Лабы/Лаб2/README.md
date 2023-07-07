@@ -9,4 +9,6 @@
 
 Отчеты:
 
-| [.docx](https://inlnk.ru/ZZNLVe) | [.pdf](https://inlnk.ru/dnVMmm) |
+| .docx                            | .pdf                              |
+|:--------------------------------:|:---------------------------------:|
+| [Отчет](https://inlnk.ru/ZZNLVe) | [Отчет](https://inlnk.ru/dnVMmm)) |
