@@ -11,4 +11,4 @@
 
 | .docx                            | .pdf                              |
 |:--------------------------------:|:---------------------------------:|
-| [Отчет](https://inlnk.ru/ZZNLVe) | [Отчет](https://inlnk.ru/dnVMmm)) |
+| [Отчет](https://inlnk.ru/ZZNLVe) | [Отчет](https://inlnk.ru/dnVMmm) |
