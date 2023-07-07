@@ -1,0 +1,187 @@
+mkdir lab0
+cd lab0
+mkdir croagunk3
+cd croagunk3/
+touch sandslash
+mkdir kadabra
+cd kadabra
+cd ..
+touch pidgey
+cd ..
+touch misdreavus6
+mkdir musharna7
+cd musharna7
+mkdir hydreigon
+mkdir forretress
+touch clamperl
+mkdir spearow
+cd ..
+touch panpour4
+mkdir skitty2
+cd skitty2
+mkdir mudkip
+mkdir koffing
+touch natu
+cd ..
+touch steelix3
+cd croagunk3/
+echo -e "Возможности Overland=8 Burrow=10 Jump=3 Power=3 \nIntelligence=4 Groundshaper=0 Sinker=0" > sandslash
+echo -e "Живет Forest \nUrban" > pidgey
+cd ..
+echo -e "Развитые способности Cursed \nBody" > misdreavus6
+cd musharna7/
+echo "weight=115.7 height=16.0 atk=6 def=9" > clamperl
+cd ..
+echo -e "Живет \nForest Rainforest" > panpour4
+cd skitty2/
+echo -e "Развитые способности Magic \nBounce" > natu
+cd ..
+echo "Тип покемона STEEL GROUND" > steelix3
+chmod 357 croagunk3/
+cd croagunk3/
+chmod 400 sandslash
+chmod 752 kadabra
+chmod 062 pidgey
+cd ..
+chmod 640 misdreavus6
+chmod 550 musharna7/
+cd musharna7/
+chmod 333 hydreigon/
+chmod 764 forretress/
+chmod 044 clamperl
+chmod 736 spearow/
+cd ..
+chmod 063 panpour4
+chmod 755 skitty2/
+cd skitty2/
+chmod 753 mudkip/
+chmod 357 koffing/
+chmod 004 natu
+cd ..
+chmod 664 steelix3
+
+chmod 777 croagunk3/
+cd croagunk3/
+chmod 777 pidgey
+chmod 777 sandslash
+cd ..
+cd musharna7/
+chmod 777 forretress
+cd ..
+cp -r croagunk3 musharna7/forretress
+chmod 777 panpour4
+ln -s panpour4 croagunk3/pidgeypanpour
+
+cat panpour4 > croagunk3/pidgeypanpour
+chmod 063 panpour4
+chmod 357 croagunk3/
+touch misdreavus6_55
+
+
+cd skitty2/
+chmod 777 natu
+cd ..
+
+cat skitty2/natu croagunk3/pidgey > misdreavus6_55
+
+ln -s croagunk3/ Copy_48
+chmod 777 musharna7/
+ln -P steelix3 musharna7/clamperlsteelix
+cp steelix3 croagunk3/kadabra
+
+cd croagunk3/                                                                                     
+chmod 400 sandslash                                                                              
+chmod 062 pidgey                                                                            
+cd ..   
+chmod 357 croagunk3/
+cd musharna7/
+chmod 764 forretress/
+cd ..
+chmod 550 musharna7/
+chmod 063 panpour4
+cd skitty2/
+chmod 004 natu
+cd ..
+
+wc -l misdreavus6 > /tmp/wc_ressssult 2>/tmp/osh
+2 misdreavus6
+
+ls -lruR 2>/dev/null | grep -E "[0-9]{2}:[0-9]{2} s" | head -2
+-rw-rw-r--  2 s367423  studs  37  8 сент. 18:33 steelix3
+drwxr-xr-x  4 s367423  studs   5  8 сент. 18:32 skitty2
+
+cat skitty2/* 2>/dev/null | grep Fo
+
+cat -n croagunk3/sandslash croagunk3/pidgey musharna7/clamperl 2>/tmp/osho | grep -v t$
+	 1  Возможности Overland=8 Burrow=10 Jump=3 Power=3
+     2  Intelligence=4 Groundshaper=0 Sinker=0
+	 
+ls -lR 2>&1 | sort -n -k 2 | grep 3$ | head -2
+-rw-rw-r--  2 s367423  studs  37  8 сент. 18:59 steelix3
+d-wxr-xrwx  3 s367423  studs   7 11 сент. 16:44 croagunk3
+
+shopt -s globstar
+cat -n `ls -R ** | grep "3$"` | sort -r 2>&1
+ls: Copy_48: Permission denied
+ls: croagunk3: Permission denied
+ls: musharna7/hydreigon: Permission denied
+ls: musharna7/hydreigon: Permission denied
+ls: skitty2/koffing: Permission denied
+ls: skitty2/koffing: Permission denied
+cat: croagunk3: Permission denied
+cat: croagunk3: Permission denied
+     1  Тип покемона STEEL GROUND
+	 
+rm -f panpour4
+rm -f skitty2/natu
+rm croagunk3/pidgeypanpo*
+rm musharna7/clamperlsteel*
+rm -rf croagunk3
+rmdir skitty2/mudkip
+
+
+total 28
+lrwxrwxrwx 1 s367423   10 Sep 21 05:44 Copy_48 -> croagunk3/
+d-wxr-xrwx 3 s367423 4096 Sep 21 05:42 croagunk3
+-rw-r----- 1 s367423   53 Sep 21 05:24 misdreavus6
+-rw-r--r-- 1 s367423   79 Sep 21 05:44 misdreavus6_55
+dr-xr-x--- 5 s367423 4096 Sep 21 05:45 musharna7
+----rw--wx 1 s367423   30 Sep 21 05:24 panpour4
+drwxr-xr-x 4 s367423 4096 Sep 21 05:24 skitty2
+-rw-rw-r-- 2 s367423   37 Sep 21 05:24 steelix3
+ls: cannot open directory './croagunk3': Permission denied
+
+./musharna7:
+total 20
+----r--r-- 1 s367423   37 Sep 21 05:24 clamperl
+-rw-rw-r-- 2 s367423   37 Sep 21 05:24 clamperlsteelix
+drwxrw-r-- 3 s367423 4096 Sep 21 05:24 forretress
+d-wx-wx-wx 2 s367423 4096 Sep 21 05:24 hydreigon
+drwx-wxrw- 2 s367423 4096 Sep 21 05:24 spearow
+
+./musharna7/forretress:
+total 4
+drwxr-xr-x 3 s367423 4096 Sep 21 05:24 croagunk3
+
+./musharna7/forretress/croagunk3:
+total 12
+drwxr-x--- 2 s367423 4096 Sep 21 05:24 kadabra
+-rwxr-xr-x 1 s367423   25 Sep 21 05:24 pidgey
+-rwxr-xr-x 1 s367423   99 Sep 21 05:24 sandslash
+
+./musharna7/forretress/croagunk3/kadabra:
+total 0
+ls: cannot open directory './musharna7/hydreigon': Permission denied
+
+./musharna7/spearow:
+total 0
+
+./skitty2:
+total 12
+d-wxr-xrwx 2 s367423 4096 Sep 21 05:24 koffing
+drwxr-x-wx 2 s367423 4096 Sep 21 05:24 mudkip
+-------r-- 1 s367423   54 Sep 21 05:24 natu
+ls: cannot open directory './skitty2/koffing': Permission denied
+
+./skitty2/mudkip:
+total 0

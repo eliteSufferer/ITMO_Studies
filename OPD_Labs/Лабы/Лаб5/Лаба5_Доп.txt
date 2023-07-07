@@ -1,0 +1,96 @@
+;Задание: На ВУ-3 вводится число. На принтер (ВУ-5) выводится строка в формате "0ч 0м 0с" (часы-минуты-секунды)
+ORG 0x000
+count: WORD 0
+seconds: WORD 0
+seconds_ones: WORD 0
+minutes: WORD 0
+;zero_const: WORD 0
+letter_ch: WORD 0xDE
+letter_m: WORD 0xCD
+letter_s: WORD 0xD3
+space: WORD 0x9A
+brake_letter: WORD 0xF9
+START: CLA
+IN 7
+AND #0x40
+BEQ START
+IN 6
+ST count
+
+; Count minutes
+COUNT_MINUTES:
+LD count
+SUB #0x3C
+BMI COUNT_SECONDS
+ST count
+LD minutes
+INC
+ST minutes
+JUMP COUNT_MINUTES
+
+COUNT_SECONDS:
+LD count
+SUB #0x0A
+BMI COUNT_ONES
+ST count
+LD seconds
+INC
+ST seconds
+JUMP COUNT_SECONDS
+
+COUNT_ONES:
+LD count
+DEC
+BMI PRINT_MINUTES
+ST count
+LD seconds_ones
+INC
+ST seconds_ones
+JUMP COUNT_ONES
+
+;PRINT_HOURS:
+; Print hours (always 0)
+;LD zero_const
+;ADD #0x30
+;OUT 0x0C
+;LD space
+;OUT 0xC0
+;LD letter_ch
+;OUT 0x0C
+
+; Print minutes
+PRINT_MINUTES:
+LD 0
+OUT 0x0C
+LD minutes
+BEQ PRINT_TENS
+ADD #0x30
+OUT 0x0C
+LD letter_m
+OUT 0x0C
+
+; Print tens seconds
+PRINT_TENS:
+LD space
+OUT 0x0C
+LD seconds
+BEQ PRINT_ONES
+ADD #0x30
+OUT 0x0C
+
+;print ones
+PRINT_ONES:
+LD seconds_ones
+BEQ BRAKE_POINT
+ADD #0x30
+OUT 0x0C
+
+STOP: 
+LD letter_s
+OUT 0x0C
+HLT
+
+BRAKE_POINT: 
+LD brake_letter
+OUT 0x0C
+HLT
