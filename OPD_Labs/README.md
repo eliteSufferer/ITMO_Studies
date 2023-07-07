@@ -8,3 +8,7 @@
 2. [Методичка (смотрите сюда почаще, чтоб не получать на защите!](https://se.ifmo.ru/documents/10180/38002/%D0%9C%D0%B5%D1%82%D0%BE%D0%B4%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5+%D1%83%D0%BA%D0%B0%D0%B7%D0%B0%D0%BD%D0%B8%D1%8F+%D0%BA+%D0%B2%D1%8B%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D1%8E+%D0%BB%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%BD%D1%8B%D1%85+%D1%80%D0%B0%D0%B1%D0%BE%D1%82+%D0%B8+%D1%80%D1%83%D0%B1%D0%B5%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE+%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D1%8F+%D0%91%D0%AD%D0%92%D0%9C+2019+bcomp-ng.pdf/d5a1be02-ad3f-4c43-8032-a2a04d6db12e)
 3. [Синяя Библия](https://se.ifmo.ru/documents/10180/38002/%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B2+%D0%9C%D0%B8%D0%BA%D1%80%D0%BE%D0%AD%D0%92%D0%9C/3e6ac9c1-5b92-4f49-ae32-1a00fb9b021c)
 4. [Много материалов для подготовке к защите лаб (и не только по ОПД) и к экзамену](https://notesitmo.github.io/cse-notes/first-course/firstcourse.html)
+
+## Изучаемый стек технологий:
+
+Unix-подобные системы, команды, способы задания прав, Bash, архитектура компьютера на основе Базовой ЭВМ, Assembly, процессоры, устройства хранения данных, сетевые технологии
