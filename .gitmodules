@@ -1,3 +1,24 @@
 [submodule "Prog_Labs/Lab1"]
 	path = Prog_Labs/Lab1
 	url = https://github.com/sergeyprohaker/Lab1.git
+[submodule "Prog_Labs/Lab2"]
+	path = Prog_Labs/Lab2
+	url = https://github.com/sergeyprohaker/Pokemons.git
+[submodule "Prog_Labs/Lab3"]
+	path = Prog_Labs/Lab3
+	url = https://github.com/sergeyprohaker/Object_Model.git
+[submodule "Prog_Labs/Lab4"]
+	path = Prog_Labs/Lab4
+	url = https://github.com/sergeyprohaker/Laba4.git
+[submodule "Prog_Labs/Lab5"]
+	path = Prog_Labs/Lab5
+	url = https://github.com/sergeyprohaker/ProgLab5.git
+[submodule "Prog_Labs/Lab6"]
+	path = Prog_Labs/Lab6
+	url = https://github.com/sergeyprohaker/ProgLab6.git
+[submodule "Prog_Labs/Lab7"]
+	path = Prog_Labs/Lab7
+	url = https://github.com/sergeyprohaker/ProgLab7.git
+[submodule "Prog_Labs/Lab8"]
+	path = Prog_Labs/Lab8
+	url = https://github.com/sergeyprohaker/ProgLab8.git
