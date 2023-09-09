@@ -12,6 +12,7 @@
 
 # Задание 2
 ./hello >out.txt 2>err.txt 
+
 *сам файл hello.asm уже изменен, если нужно внести правки, то запускать так: ./compile.sh hello >out.txt 2> err.txt*
 
 # Задание 3 && 3.5
