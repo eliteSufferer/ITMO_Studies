@@ -35,50 +35,56 @@ function check_quarter($x, $y){
         return 'on axis';
     }
 }
-
+if ($_SERVER['REQUEST_METHOD'] != 'GET'){
+    http_response_code(405);
+    echo 'Incorrect, try again) Only GET method accepted.';
+    exit();
+}
 $x = $_GET['xVal'];
 $y = $_GET['yVal'];
 $r = $_GET['rVal'];
 
 $response = [];
 
-    if (!(is_numeric($x)) || !(is_numeric($y)) || !(is_numeric($r))){
-        $response['result'] = 'Invalid data type';
-        http_response_code(422);
-    } else if (!(-3 <= $x && $x <= 5) || !(-5 <= $y && $y <= 5) || !(1 <= $r && $r <= 5)){
-        $response['result'] = 'Invalid data range';
-        http_response_code(422);
-    } else {
-        switch (check_quarter($x, $y)){
-            case 'first':
-                if (rectangle($x, $y, $r)){
-                    $response['result'] = 'In';
-                } else {
-                    $response['result'] = 'Out';
-                }
-                break;
-            case 'second':
-                $response['result'] = 'Out';
-                break;
-            case 'third':
-                if (triangle($x, $y, $r)){
-                    $response['result'] = 'In';
-                } else {
-                    $response['result'] = 'Out';
-                }
-                break;
-            case 'fourth':
-                if (circle($x, $y, $r)){
-                    $response['result'] = 'In';
-                } else {
-                    $response['result'] = 'Out';
-                }
-                break;
-            case 'on axis':
+if (!(is_numeric($x)) || !(is_numeric($y)) || !(is_numeric($r))){
+    http_response_code(422);
+    echo 'Incorrect, try again) Invalid data type';
+    exit();
+} else if (!(-3 <= $x && $x <= 5) || !(-5 <= $y && $y <= 5) || !(1 <= $r && $r <= 5)){
+    http_response_code(422);
+    echo 'Incorrect, try again) Invalid data range';
+    exit();
+} else {
+    switch (check_quarter($x, $y)){
+        case 'first':
+            if (rectangle($x, $y, $r)){
                 $response['result'] = 'In';
-                break;
-        }
+            } else {
+                $response['result'] = 'Out';
+            }
+            break;
+        case 'second':
+            $response['result'] = 'Out';
+            break;
+        case 'third':
+            if (triangle($x, $y, $r)){
+                $response['result'] = 'In';
+            } else {
+                $response['result'] = 'Out';
+            }
+            break;
+        case 'fourth':
+            if (circle($x, $y, $r)){
+                $response['result'] = 'In';
+            } else {
+                $response['result'] = 'Out';
+            }
+            break;
+        case 'on axis':
+            $response['result'] = 'In';
+            break;
     }
+}
 
 $end_time = microtime(true);
 $execution_time = ($end_time - $start_time);
