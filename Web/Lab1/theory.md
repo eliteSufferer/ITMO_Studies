@@ -216,7 +216,7 @@ FastCGI также используется для создания динами
 
 PHP — это серверный скриптовый язык, основанное применение которого — разработка веб-приложений.
 
-- **Типы данных**: Скалярные (int, float, string, boolean) и составные (array, object).
+- **Типы данных**: Скалярные (int, float, string, boolean, double, NULL), составные (resource (ex: file descriptior), array, object), псевдотипы (mixed, number, callback, void).
 
 - **Встраивание в веб-страницы**: PHP-код может быть встроен в HTML.
 
