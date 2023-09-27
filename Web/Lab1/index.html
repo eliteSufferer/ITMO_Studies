@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Web Lab1</title>
     <link rel="icon" href="assets/free-icon-coding-7442382%20(1).png">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
 
         :root{
@@ -204,9 +205,9 @@
         }
 
         #resultsTable th {
-            padding: 10px 15px; /* Отступы в заголовках */
-            background-color: #4CAF50; /* Зелёный цвет фона */
-            color: var(--main-text-color); /* Белый текст */
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: var(--main-text-color);
         }
 
 
@@ -225,17 +226,17 @@
 
 
         #resultsTable td, th {
-            text-align: left; /* Выравнивание текста по левому краю */
+            text-align: left;
             padding: 8px;
         }
 
-        /* Стиль для строк при наведении курсора */
+
         #resultsTable tr:hover {
-            background-color: var(--hover-color); /* Светло-серый фон */
+            background-color: var(--hover-color);
         }
 
 
-        /* Чередующиеся цвета строк */
+
         #resultsTable tr:nth-child(even) {
             background-color: var(--unusual-table-row-color);
         }
@@ -269,6 +270,30 @@
             border: none;
             border-radius: 4px;
             font-weight: bold;
+        }
+
+        .custom-confirm {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .custom-confirm-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        button {
+            margin: 5px;
         }
 
        @media (max-width: 1062px) {
@@ -332,7 +357,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" name="xValue" id="xValue" class="coords-input">
+                            <input type="text" name="xValue" id="xValue" class="coords-input" maxlength="10">
                         </td>
                     </tr>
                     <tr>
@@ -343,7 +368,7 @@
 
                     <tr>
                         <td>
-                            <input type="text" name="yValue" id="yValue" class="coords-input">
+                            <input type="text" name="yValue" id="yValue" class="coords-input" maxlength="10">
                         </td>
                     </tr>
 
@@ -372,9 +397,10 @@
 
                     <tr>
                         <td>
-                            <input type="submit" value="Send" class="submit-btn"><br>
+                            <input type="button" value="Send" class="submit-btn"><br>
                         </td>
                     </tr>
+
 
                     <tr>
                         <td>
@@ -391,7 +417,7 @@
     </tr>
     <tr>
         <td>
-            <table id="resultsTable" >
+            <table id="resultsTable">
                 <tr>
                     <th>X</th>
                     <th>Y</th>
@@ -400,6 +426,7 @@
                     <th>Current time</th>
                     <th>Execution time</th>
                 </tr>
+
             </table>
         </td>
     </tr>
@@ -410,12 +437,14 @@
 </table>
 
 
+
 <script type="module" src="utils/render.js"></script>
 <script type="text/javascript" src="utils/addToTable.js"></script>
 <script type="text/javascript" src="utils/drawing.js"></script>
 <script type="text/javascript" src="utils/saveData.js"></script>
 <script type="text/javascript" src="utils/switchThemes.js"></script>
 <script type="text/javascript" src="utils/clearStorage.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 </html>
 
@@ -429,14 +458,58 @@
     }
 
     const checkboxes = document.querySelectorAll("input[name='rValue']");
-    checkboxes.forEach((checkbox) => {
-        checkbox.addEventListener("change", function (){
-            checkboxes.forEach((box) => {
-                if (box !== this){
-                    box.checked = false;
-                }
-            })
-        })
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                checkboxes.forEach(box => {
+                    if (box !== this) {
+                        box.checked = false;
+                        localStorage.setItem(box.value, false);
+                    }
+                });
+                localStorage.setItem(this.value, true);
+            } else {
+                localStorage.setItem(this.value, false);
+            }
+        });
+    });
+
+    const xInputEl = document.querySelector('#xValue');
+    xInputEl.addEventListener("input", function (){
+        sessionStorage.setItem("xValue", xInputEl.value);
     })
 
+    const yInputVal = document.querySelector('#yValue');
+    yInputVal.addEventListener("input", function (){
+        sessionStorage.setItem("yValue", yInputVal.value);
+    })
+
+    window.addEventListener("load", function (){
+        const savedValueX = sessionStorage.getItem("xValue");
+        const savedValueY = sessionStorage.getItem("yValue");
+        if (savedValueX !== null && savedValueY !== null){
+            xInputEl.value = savedValueX;
+            yInputVal.value = savedValueY;
+        }
+        let isAnyChecked = false;
+        checkboxes.forEach(checkbox => {
+            const isChecked = localStorage.getItem(checkbox.value) === 'true';
+            if (isChecked) {
+                isAnyChecked = true;
+            }
+            checkbox.checked = isChecked;
+        });
+
+        if (!isAnyChecked && checkboxes.length > 0) {
+            checkboxes[0].checked = true;
+            localStorage.setItem(checkboxes[0].value, true);
+        }
+        const theme = sessionStorage.getItem("currTheme");
+        if (theme === "dark"){
+            const themeSwitcher = document.querySelector('#themeSwitch');
+            themeSwitcher.checked = true;
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+        drawCoordsPlane(0);
+    })
 </script>

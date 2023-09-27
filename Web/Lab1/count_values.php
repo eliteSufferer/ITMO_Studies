@@ -45,12 +45,12 @@ $y = $_GET['yVal'];
 $r = $_GET['rVal'];
 
 $response = [];
-
+$rVals = ["1", "2", "3", "4", "5"];
 if (!(is_numeric($x)) || !(is_numeric($y)) || !(is_numeric($r))){
     http_response_code(422);
     echo 'Incorrect, try again) Invalid data type';
     exit();
-} else if (!(-3 <= $x && $x <= 5) || !(-5 <= $y && $y <= 5) || !(1 <= $r && $r <= 5)){
+} else if (!(-3 < $x && $x < 5) || !(-5 < $y && $y < 5) || !in_array(trim($r), $rVals, true)){
     http_response_code(422);
     echo 'Incorrect, try again) Invalid data range';
     exit();

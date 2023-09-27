@@ -1,12 +1,10 @@
 import Validator from "./Validator.js";
 
-const mainForm = document.querySelector('#myForm');
-    mainForm.addEventListener('submit', function (e){
+const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.addEventListener('click', function (e){
         e.preventDefault();
-        const xVal = parseFloat(document.querySelector('#xValue').value);
-        const yVal = parseFloat(document.querySelector('#yValue').value);
-
-
+        const xVal = document.querySelector('#xValue').value;
+        const yVal = document.querySelector('#yValue').value;
 
         const chosenCheckboxes = document.querySelectorAll("input[name='rValue']:checked");
         const rVal = Array.from(chosenCheckboxes).map(checkbox => checkbox.value);
@@ -16,7 +14,19 @@ const mainForm = document.querySelector('#myForm');
         if (validator.getResponseCode() === 1){
             drawCoordsPlane(rVal);
             if (xVal > rVal || yVal > rVal || xVal < -rVal || yVal < -rVal){
-                alert('Unable to draw a point, length of the axes exceeded')
+                Toastify({
+                    text: "Validated, but out of plot range, the point won't be shown",
+                    className: "info",
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        border: "1px solid white"
+                    },
+                    offset: {
+                        x: window.innerWidth / 2 - 150,
+                        y: 0
+                    },
+                    position: "right",
+                }).showToast();
             }
             const canvasCoords = toCanvasCoords(xVal, yVal, rVal, 350);
             drawPoint(canvasCoords.x, canvasCoords.y);
@@ -38,7 +48,21 @@ const mainForm = document.querySelector('#myForm');
                     alert(`There was an error processing your request: ${error.message}`)
                 })
         } else {
-            alert(validator.getMessage());
+            Toastify({
+                text: validator.getMessage(),
+                className: "error",
+                style: {
+                    background: "linear-gradient(to right, #ff6347, #ff0000)",
+                    border: "1px solid white",
+                    width: "100px",
+                    "text-align": "center"
+                },
+                offset: {
+                    x: window.innerWidth / 2,
+                    y: 0
+                },
+                position: "right",
+            }).showToast();
         }
 
     });

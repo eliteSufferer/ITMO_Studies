@@ -14,7 +14,7 @@ export default class Validator{
             return;
         }
 
-        if (!regex.test(yVal) || !(-5 < parseFloat(yVal) && parseFloat(yVal) < 5) || (yVal === "")) {
+        if (!regex.test(yVal) || !(-3 <= parseFloat(yVal) && parseFloat(yVal) <= 5) || (yVal === "")) {
             this.message = "Error in Y";
             this.responseCode = 0;
             return;

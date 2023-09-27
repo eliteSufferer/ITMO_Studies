@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function (){
         themeSwitch.addEventListener("click", function (event){
             const theme = event.target.checked ? "dark" : "light";
             document.documentElement.setAttribute("data-theme", theme);
+            sessionStorage.setItem("currTheme", theme);
             drawCoordsPlane(0);
         });
 })

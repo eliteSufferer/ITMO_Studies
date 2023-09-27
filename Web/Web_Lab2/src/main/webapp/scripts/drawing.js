@@ -1,13 +1,13 @@
-function drawPoint(xVal, yVal){
+function drawPoint(xVal, yVal, color){
     let canvas = document.querySelector('#canvas');
     let ctx = canvas.getContext('2d');
 
     const pointSize = 10;
     ctx.beginPath();
-    //ctx.moveTo(canvas.width / 2, canvas.height / 2);
     ctx.arc(xVal, yVal, pointSize/2, 0, Math.PI * 2);
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = color;
     ctx.fill();
+
 }
 
 function drawDot(ctx, x, y, radius, startAngle, endAngle){
@@ -29,7 +29,8 @@ function putDots(ctx){
     drawDot(ctx, 175, 345, radius, 0, Math.PI * 2);
 
 }
-function drawCoordsPlane(r){
+
+function drawCoordsPlane(){
     let canvas = document.querySelector('#canvas');
     let ctx = canvas.getContext('2d');
 
@@ -43,42 +44,39 @@ function drawCoordsPlane(r){
     const quarterHeight = canvas.height / 4;
     const arrowSize = 10;
 
-    //1st quarter - square
+    //1st quarter - triangle
     ctx.fillStyle = '#4169E1';
-    ctx.fillRect(halfWidth, 0, halfWidth, halfHeight);
-
-    //3rd quarter - triangle
     ctx.beginPath();
-    ctx.moveTo(0, halfHeight);
-    ctx.lineTo(halfWidth, halfHeight + quarterHeight);
+    ctx.moveTo(canvas.width, halfHeight);
+    ctx.lineTo(halfWidth, 0);
     ctx.lineTo(halfWidth, halfHeight);
     ctx.closePath();
     ctx.fill();
 
+    //3rd quarter - square
+    ctx.fillRect(0, halfHeight, halfWidth, halfHeight)
+
     //4th quarter - 1/4 circle
     ctx.beginPath();
     //ctx.moveTo(halfWidth, halfHeight);
-    ctx.arc(halfWidth, halfHeight, halfWidth, 0, 0.5*Math.PI);
+    ctx.arc(halfWidth, halfHeight, halfWidth, Math.PI, 1.5*Math.PI);
     ctx.lineTo(halfWidth, halfHeight);
     ctx.fill();
 
 
-
-    //Draw axes, points and labels
     ctx.beginPath();
     putDots(ctx);
     ctx.font = "15px Arial";
     ctx.fillText('y', 150, 15);
     ctx.fillText('x', 340, 195);
-    ctx.fillText(String(r/2), halfWidth+quarterWidth, halfHeight-10);
-    ctx.fillText(String(r), 337, halfHeight-10);
-    ctx.fillText(String(r), 190, 15);
-    ctx.fillText(String(-r/2), 87.5, halfHeight-10);
-    ctx.fillText(String(-r), 0, halfHeight-10);
+    ctx.fillText("r/2", halfWidth+quarterWidth, halfHeight-10);
+    ctx.fillText("r", 337, halfHeight-10);
+    ctx.fillText("r", 190, 15);
+    ctx.fillText("-r/2", 87.5, halfHeight-10);
+    ctx.fillText("-r", 0, halfHeight-10);
 
-    ctx.fillText(String(-r), 155, canvas.height);
-    ctx.fillText(String(-r/2), 145, 262.5);
-
+    ctx.fillText("-r", 155, canvas.height);
+    ctx.fillText("-r/2", 145, 262.5);
 
     // Axes
     ctx.beginPath();
@@ -100,7 +98,7 @@ function drawCoordsPlane(r){
     ctx.lineTo(halfWidth + arrowSize, arrowSize);
     ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--axes-color').trim();
 
-    ctx.fillText(String(r/2), 185, 87.5);
+    ctx.fillText("r/2", 185, 87.5);
     ctx.stroke();
 }
 
@@ -111,3 +109,12 @@ function toCanvasCoords(x, y, r, canvasSize) {
         y: canvasSize - (scale / r * y + scale)
     };
 }
+
+function toNormalCoords(canvasX, canvasY, r, canvasSize){
+    const scale = canvasSize / 2;
+    return {
+        x: r * (canvasX - scale) / scale,
+        y: r * (canvasSize - canvasY - scale) / scale
+    }
+}
+
