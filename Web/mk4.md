@@ -82,4 +82,3 @@ public class MyServlet extends HttpServlet {
 </web-app>
 ```
 
-Таким образом, два экземпляра одного и того же класса `com.example.MyServlet` обрабатывают разные ресурсы.
