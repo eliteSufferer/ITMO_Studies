@@ -1,7 +1,0 @@
-lib.o: lib.asm
-	nasm -felf64 lib.o lib.asm
-main.o: main.asm
-	nasm -felf 64 main.o main.asm
-
-run: lib.o main.o
-	ld -o program lib.o main.o
