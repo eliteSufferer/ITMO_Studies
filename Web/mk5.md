@@ -31,7 +31,8 @@
 `${}` используется для односторонних операций, в основном чтения, тогда как `#{}` используется для двустороннего взаимодействия и поддерживает больше функциональности.
 
 ## 3. Код managed bean, содержащего метод, возвращающий время с момента рестарта сервера или деплоя приложения
-```
+
+```java
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
@@ -81,7 +82,7 @@ public class TimeSinceRestartBean {
 
 
 ## 3. Код для JSF страницы, показывающей значение параметра user-name из HTTP запроса
-```
+```java
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
