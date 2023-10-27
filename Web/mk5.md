@@ -79,3 +79,19 @@ public class TimeSinceRestartBean {
 
 Оба эти фрагмента не вызывают ошибок компиляции, потому что они обрабатываются во время выполнения, и JSF/EL отложенно проверяют наличие соответствующих методов или свойств.
 
+
+## 3. Код для JSF страницы, показывающей значение параметра user-name из HTTP запроса
+```
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<head>
+    <title>Show User Name</title>
+</head>
+<body>
+
+    <h:outputText value="User Name from HTTP Request: #{param['user-name']}" />
+
+</body>
+</html>
+```
