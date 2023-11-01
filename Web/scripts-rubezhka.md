@@ -121,7 +121,13 @@ nyan.innerHTML = "<img src=' http://www.example.com/nyancat.gif'>";
 ## 19. Напишите js функ. которая заменит все текстовые поля на кнопки с тем же текстом
 
 ```js
-const
+const inputs = document.querySelectorAll('input[type="text"]')
+
+    inputs.forEach(input => {
+        let button = document.createElement("button")
+        button.textContent = input.value;
+        input.replaceWith(button);
+    })
 ```
 
 ## 22. Реализовать функцию на JavaScript, которая будет закрывать текущее окно, если в нем открыт https://www.google.ru
