@@ -123,3 +123,10 @@ nyan.innerHTML = "<img src=' http://www.example.com/nyancat.gif'>";
 ```js
 const
 ```
+
+## 22. Реализовать функцию на JavaScript, которая будет закрывать текущее окно, если в нем открыт https://www.google.ru
+```js
+if (window.location.href === 'https://www.google.ru/'){
+        window.close();
+    }
+```
