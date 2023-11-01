@@ -130,3 +130,23 @@ if (window.location.href === 'https://www.google.ru/'){
         window.close();
     }
 ```
+
+## 23. Функция JavaScript, запрещающая для всех текстовых полей ввод символов, если они не латинские буквы или не цифры
+```js
+// Функция для проверки вводимого значения
+function restrictInputToAlphanumeric(event) {
+  // Регулярное выражение, соответствующее не латинским буквам и не цифрам
+  const nonAlphanumericRegex = /[^a-z0-9]/gi;
+
+  // Получаем ссылку на элемент input
+  const input = event.target;
+
+  // Заменяем все найденные не соответствующие символы на пустую строку
+  input.value = input.value.replace(nonAlphanumericRegex, '');
+}
+
+// Добавляем обработчик для всех текстовых полей
+document.querySelectorAll('input[type="text"]').forEach(inputField => {
+  inputField.addEventListener('input', restrictInputToAlphanumeric);
+});
+```
