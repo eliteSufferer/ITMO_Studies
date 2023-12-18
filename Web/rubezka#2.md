@@ -202,7 +202,8 @@ export default CreditCardInput;
 
 > По сути, из того что я понял, ЖЦ Spring-app сводится к ЖЦ бинов. Поэтому вот так:
 
-![SB LC](image.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/d7c19a05-ebcd-4fba-b505-ef679aa93c70)
+
 
 1. **Загрузка конфигурации**: Spring-приложение начинается с создания `ApplicationContext`, который загружает конфигурации бинов, определенных в XML, Java конфигурации или через аннотации.
 
@@ -272,7 +273,7 @@ export class ClockComponent implements OnInit, OnDestroy {
 }
 ```
 
-**clocck.component.html**
+**clock.component.html**
 ```html
 <div class="clock">
   <p>{{ time | date: 'HH:mm:ss' }}</p>
@@ -626,7 +627,8 @@ export default {
 - Управляет жизненным циклом запроса (прохождение через все фазы)
 - Конфигурация задается в web.xml
 - 
-![Faces Servlet](image-1.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/2d9db483-2e65-4a33-86ad-766ddbbb8071)
+
 
 Пример конфигурации:
 
@@ -899,15 +901,18 @@ public class CustomerBean {
 
 MVC:
 
-![MVC](image-3.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/62bc161f-8107-4fba-90f9-abb9ddaf82aa)
+
 
 MVP:
 
-![MVP](image-4.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/136504e2-e8f2-4f5a-9851-32fb0891a834)
+
 
 MVVM:
 
-![MVVM](image-5.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/bf619ba1-4f76-42bd-a228-e6766d82471f)
+
 
 `MVVM (Model-View-ViewModel)` и `MVP (Model-View-Presenter)` являются паттернами проектирования пользовательского интерфейса, которые эволюционировали из традиционного паттерна MVC (Model-View-Controller). Все эти шаблоны направлены на разделение ответственности в приложениях, но они делают это по-разному.
 
@@ -1076,7 +1081,8 @@ Spring Web MVC – “базовый” фреймворк в составе Spr
 
 **Архитекутра**
 
-![SMVC](image-6.png)
+![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/79cd301d-5bc0-41c2-950c-6b0bd6de883e)
+
 
 1. **HTTP Request**: Все начинается с HTTP-запроса, который отправляется на сервер.
 
