@@ -44,7 +44,7 @@
 
 - Доступ компонентов к сервисам реализуется с помощью DI.
 
-- Список сервисов, поставляющих данные для компонента, указывается в свойстве `providers` декоратора компонента
+- Список сервисов, поставляющих данные для компонента, указывается в свойстве `providers` декоратора компонента (если нужно ограничить scope сервиса только этим компонентом и его потомками) или берется из `root injector`, у сервисов которого scope - все приложение
 
 Основные принципы реализации DI (является основой взаимодействия компонентов и сервисов):
 - Приложение содержит как минимум один глобальный Injector, который
@@ -202,8 +202,7 @@ export default CreditCardInput;
 
 > По сути, из того что я понял, ЖЦ Spring-app сводится к ЖЦ бинов. Поэтому вот так:
 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/d7c19a05-ebcd-4fba-b505-ef679aa93c70)
-
+![SB LC](image.png)
 
 1. **Загрузка конфигурации**: Spring-приложение начинается с создания `ApplicationContext`, который загружает конфигурации бинов, определенных в XML, Java конфигурации или через аннотации.
 
@@ -273,7 +272,7 @@ export class ClockComponent implements OnInit, OnDestroy {
 }
 ```
 
-**clock.component.html**
+**clocck.component.html**
 ```html
 <div class="clock">
   <p>{{ time | date: 'HH:mm:ss' }}</p>
@@ -293,7 +292,7 @@ export class ClockComponent implements OnInit, OnDestroy {
   - Свойство: [property]="value"
   - Событие: (event)="handler()"
   - Двусторонняя: [(ngModel)]="value"
-> Подробнее про привязку в одном из следующих вопросов
+> Подробнее про привязку в одном из предыдущих вопросов
 - Пайпы (Pipes): Позволяют осуществлять преобразование формата отображаемых данных (например, дат или денежных сумм) прямо в шаблоне. Например, {{ date | date:'shortDate' }} преобразует объект Date в короткую дату. Фильтры можно объединять в последовательности (pipe chains). 
 
 
@@ -381,8 +380,9 @@ export class ClockComponent implements OnInit, OnDestroy {
 - Универсальные компоненты уровня бизнес-логики.
 - Абстрактная реализация паттерна CDI в Java / Jakarta EE.
 - «Клонируют» основные концепции бинов из Spring.
-- Могут использоваться со всеми фреймворками Java /
-Jakarta EE.
+- Общая идея – «отвязаться» от конкретного
+фреймворка при создании бизнес-логики внутри
+приложения.
 - Конфигурируются аннотациями, основной пакет –
 javax.enterprise.context.
 - Для CDI используется универсальная аннотация
@@ -408,7 +408,7 @@ public void doSomething() {
 - Определяет жизненный цикл бинов и их видимость друг для
 друга.
 - Задаётся аннотацией.
-- В спецификации определены 5 уровней контекста:
+- В спецификации определены 6 уровней контекста:
   - @RequestScoped.
   - @SessionScoped.
   - @ApplicationScoped.
@@ -627,8 +627,7 @@ export default {
 - Управляет жизненным циклом запроса (прохождение через все фазы)
 - Конфигурация задается в web.xml
 - 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/2d9db483-2e65-4a33-86ad-766ddbbb8071)
-
+![Faces Servlet](image-1.png)
 
 Пример конфигурации:
 
@@ -807,58 +806,84 @@ React Router позволяет динамически определять ма
 
 ### 3. Бронь авиабилетов на jsf
 
-Основные сущности: Flight, Ticket, User
-
-```java
-public class Flight {
-    private String flightNumber;
-    private String departure;
-    private String destination;
-    private LocalDateTime departureTime;
-    // Геттеры и сеттеры
-
-    //остальные 2 сущности аналогично
-}
-```
-
 Бины для управления логикой:
 ```java
 @ManagedBean
 @SessionScoped
 public class BookingBean {
-    private List<Booking> bookings = new ArrayList<>();
+    private String passengerName;
+    private String flightNumber;
 
-    public String bookFlight(Flight flight, String passengerName) {
-        Booking newBooking = new Booking();
-        newBooking.setId(UUID.randomUUID().toString());
-        newBooking.setFlight(flight);
-        newBooking.setPassengerName(passengerName);
-
-        bookings.add(newBooking);
-
-        // Код для сохранения бронирования в базе данных
-
-        return "bookingConfirmation"; // Перенаправление на страницу подтверждения
+    public String bookTicket() {
+        // Здесь может быть логика обработки бронирования
+        return "confirmation?faces-redirect=true";
     }
 
     // Геттеры и сеттеры
+    public String getPassengerName() {
+        return passengerName;
+    }
+
+    public void setPassengerName(String passengerName) {
+        this.passengerName = passengerName;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
 }
 ```
 
-Сама JSF страница:
+Сами JSF страницы:
+
+Страница ввода данных бронирования:
 ```js
-<h:form>
-    <h:dataTable value="#{flightBean.flights}" var="flight">
-        <h:column>
-            <f:facet name="header">Flight Number</f:facet>
-            #{flight.flightNumber}
-        </h:column>
-        <!-- Другие колонки для данных рейса -->
-        <h:column>
-            <h:commandButton value="Book" action="book?flight=#{flight.flightNumber}"/>
-        </h:column>
-    </h:dataTable>
-</h:form>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>Booking Page</title>
+</h:head>
+<h:body>
+    <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel for="name" value="Passenger Name:" />
+            <h:inputText id="name" value="#{bookingBean.passengerName}" />
+
+            <h:outputLabel for="flightNumber" value="Flight Number:" />
+            <h:inputText id="flightNumber" value="#{bookingBean.flightNumber}" />
+        </h:panelGrid>
+
+        <h:commandButton value="Book" action="#{bookingBean.bookTicket}" />
+    </h:form>
+</h:body>
+</html>
+```
+
+Страница подтверждения:
+
+```js
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>Confirmation Page</title>
+</h:head>
+<h:body>
+    <h:panelGrid columns="2">
+        <h:outputText value="Passenger Name:" />
+        <h:outputText value="#{bookingBean.passengerName}" />
+
+        <h:outputText value="Flight Number:" />
+        <h:outputText value="#{bookingBean.flightNumber}" />
+    </h:panelGrid>
+
+    <h:button value="Back to Booking" outcome="/booking" />
+</h:body>
+</html>
+
 ```
 
 
@@ -901,18 +926,15 @@ public class CustomerBean {
 
 MVC:
 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/62bc161f-8107-4fba-90f9-abb9ddaf82aa)
-
+![MVC](image-3.png)
 
 MVP:
 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/136504e2-e8f2-4f5a-9851-32fb0891a834)
-
+![MVP](image-4.png)
 
 MVVM:
 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/bf619ba1-4f76-42bd-a228-e6766d82471f)
-
+![MVVM](image-5.png)
 
 `MVVM (Model-View-ViewModel)` и `MVP (Model-View-Presenter)` являются паттернами проектирования пользовательского интерфейса, которые эволюционировали из традиционного паттерна MVC (Model-View-Controller). Все эти шаблоны направлены на разделение ответственности в приложениях, но они делают это по-разному.
 
@@ -1081,8 +1103,7 @@ Spring Web MVC – “базовый” фреймворк в составе Spr
 
 **Архитекутра**
 
-![image](https://github.com/eliteSufferer/ITMO_Studies/assets/46615564/79cd301d-5bc0-41c2-950c-6b0bd6de883e)
-
+![SMVC](image-6.png)
 
 1. **HTTP Request**: Все начинается с HTTP-запроса, который отправляется на сервер.
 
@@ -1092,7 +1113,7 @@ Spring Web MVC – “базовый” фреймворк в составе Spr
    - Обычный сервлет – конфигурируется в web.xml.
 
 3. **Handler Mapping (1)**:
-   - Механизм, позволяющий распределять запросы по различным обработчикам (контроллерам).
+   - Интерфейс, позволяющий распределять запросы по различным обработчикам (контроллерам).
    - Помимо «основного» Handler'а, в обработке
 запроса могут участвовать один или несколько
 «перехватчиков» (реализаций интерфейса HandlerInterceptor).
@@ -1384,22 +1405,15 @@ public class UptimeBean {
 
 Использование:
 
-```java
-@WebServlet("/uptime")
-public class UptimeServlet extends HttpServlet {
-
-    @EJB
-    private UptimeBean uptimeBean;
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        long uptime = uptimeBean.getUptimeMinutes();
-        out.println("<html><body>");
-        out.println("<h2>Server Uptime:</h2>");
-        out.println("<p>Server has been running for " + uptime + " minutes.</p>");
-        out.println("</body></html>");
-    }
-}
+```js
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>Server Uptime</title>
+</h:head>
+<h:body>
+    <h:outputText value="Server has been running for #{uptimeBean.uptimeMinutes} minutes." />
+</h:body>
+</html>
 ```
 
