@@ -1582,3 +1582,47 @@ Contexts and Dependency Injection (CDI) в Java EE представляет со
 ### 9. Интеграция с другими спецификациями Java EE
 
 - CDI бины могут интегрироваться с другими Java EE компонентами, такими как EJB, JPA, JSF и JAX-RS.
+
+## ПСЖ на Ангуляре:
+```ts
+@Component({
+  selector: 'app-rubezhka-auth-interface',
+  templateUrl: './rubezhka-auth-interface.component.html',
+  styleUrls: ['./rubezhka-auth-interface.component.scss']
+})
+export class RubezhkaAuthInterfaceComponent implements OnInit {
+
+  name: string = ''
+  date: string = ''
+  document: string = ''
+
+  constructor() { }
+
+
+  generateDocument(){
+    this.document = `Я, ${this.name}, прошу отчислить меня из университета по собственному желанию с ${this.date}`
+  }
+
+
+  ngOnInit(): void {
+  }
+
+}
+```
+
+```html
+<div>
+  <form (ngSubmit)="generateDocument()">
+      <input  name="name" [(ngModel)]="name" type="text" required>
+
+      <input type="date" [(ngModel)]="date"  name="date" required>
+
+    <button type="submit">Create PSG</button>
+  </form>
+
+  <div *ngIf="document">
+    <h2>PSG</h2>
+    <p>{{document}}</p>
+  </div>
+</div>
+```
