@@ -784,7 +784,69 @@ React, популярная JavaScript библиотека для создан�
 
 6. **SEO Оптимизация**: Для одностраничных приложений на React может потребоваться дополнительная работа для оптимизации под поисковые системы
 
-### 3.
+### 3. Форма для отправки сообщения в поддержку на Thymeleaf и Spring MVC. С выбором причины(select), полем для email и текстовым полем проблемы
+
+DTO:
+```java
+public class SupportMessageDTO {
+    private String email;
+    private String reason;
+    private String message;
+
+    // Геттеры и сеттеры
+}
+```
+Controller:
+```java
+@Controller
+public class SupportController {
+
+    @GetMapping("/support")
+    public String showSupportForm(Model model) {
+        model.addAttribute("supportMessage", new SupportMessageDTO());
+        return "support-form";
+    }
+
+    @PostMapping("/support")
+    public String submitSupportForm(SupportMessageDTO supportMessage) {
+        // Обработка сообщения...
+    }
+}
+```
+
+Шаблон страницы:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Support Form</title>
+</head>
+<body>
+    <form th:action="@{/support}" th:object="${supportMessage}" method="post">
+        <div>
+            <label for="reason">Причина обращения:</label>
+            <select th:field="*{reason}">
+                <option value="Technical">Техническая проблема</option>
+                <option value="Account">Вопросы аккаунта</option>
+                <option value="Other">Другое</option>
+            </select>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" th:field="*{email}" />
+        </div>
+        <div>
+            <label for="message">Сообщение:</label>
+            <textarea th:field="*{message}"></textarea>
+        </div>
+        <div>
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</body>
+</html>
+```
 
 ## Билет 10
 
@@ -837,7 +899,34 @@ public class SecondaryDataService implements DataService {
 }
 ```
 
-### 3. 
+### 3. Интерфейс на Angular, формирующий две страницы URL - «Главную» (/home) и «Новости» (/news). Переход между страницами должен осуществляться посредством гиперссылок.
+
+App-Routing:
+
+```ts
+const routes: Routes = [
+  {path: 'home', component: HomeComponentComponent},
+  {path: 'news', component: NewsComponentComponent}
+];
+```
+
+HomeComponent:
+```html
+<p>This is Home page</p>
+<a routerLink="/news">News</a>
+```
+
+NewsComponent:
+```html
+<p>This is News page</p>
+<a routerLink="/home">Home</a>
+```
+
+AppComponent:
+
+```html
+<router-outlet></router-outlet>
+```
 
 
 ## Билет 11
@@ -1025,7 +1114,38 @@ export class RubezhkaAuthInterfaceComponent implements OnInit {
 - **spring-boot-starter-actuator**: Предоставляет продакшн-готовые функции для мониторинга и управления приложением.
 - **spring-boot-starter-mail**: Для отправки электронной почты.
 
-### 3.
+### 3. Конфигурация, чтобы JSF обрабатывал все запросы приходящие с .xhtml и со всех URL, начинающихся с /faces/
+
+```xml
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Map all URLs ending with .xhtml -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <!-- Map all URLs starting with /faces/ -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Other configurations -->
+
+</web-app>
+```
 
 ## Билет 13
 
@@ -1062,8 +1182,82 @@ export class RubezhkaAuthInterfaceComponent implements OnInit {
 
 Interceptors – классы, реагирующие на определенные события ЖЦ бинов, например @PostConstruct, @PreDestroy, @AroundInvoke и т.д. Похожи на фильтры в сервлетах.
 
-### 3.
+### 3. Страница, построенная с помощью React, реализующая таблицу со списком пользователей системы (два поля — screenName и fullName). Таблица должна поддерживать поиск по fullName (правило поиска - «содержит, с учетом регистра»). Нужно использовать минимум 2 React компонента.
 
+```jsx
+const SearchBar = ({ onSearch }) => {
+  return (
+    <input
+      type="text"
+      placeholder="Поиск по имени..."
+      onChange={(e) => onSearch(e.target.value)}
+    />
+  );
+};
+
+export default SearchBar;
+```
+
+```jsx
+const UserTable = ({ users }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Screen Name</th>
+          <th>Full Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users.map((user, index) => (
+          <tr key={index}>
+            <td>{user.screenName}</td>
+            <td>{user.fullName}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default UserTable;
+```
+
+Главный компонент:
+
+```jsx
+const App = () => {
+  const [initialUsers, setInitialUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    // Замените этот код на запрос к API или другой источник данных
+    const usersData = [
+      { screenName: 'user1', fullName: 'John Doe' },
+      { screenName: 'user2', fullName: 'Jane Smith' },
+      // Другие пользователи
+    ];
+    setInitialUsers(usersData);
+    setFilteredUsers(usersData);
+  }, []);
+
+  const handleSearch = (searchTerm) => {
+    const filtered = initialUsers.filter(user =>
+      user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
+
+  return (
+    <div>
+      <SearchBar onSearch={handleSearch} />
+      <UserTable users={filteredUsers} />
+    </div>
+  );
+};
+
+export default App;
+```
 ## Билет 14
 
 ### 1. Платформы Java. Особенности, сходства и различия
@@ -1109,8 +1303,46 @@ Java EE: двухфазный конструктор – сам конструк
 
 Spring: можно сделать трехфазный конструктор – собственно конструктор, метод @PostConstruct, и написать свой BeanPostProcessor, который будет производить дополнительные действия с бином до/после инициализации.
 
-### 3.
+### 3. JSF страница, которая выводит 10 простых чисел, а затем ajax'ом динамически подгружает остальные пачками по 10
 
+```html
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://xmlns.jcp.org/jsf/html"
+xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+<title>Prime Numbers</title>
+</h:head>
+<h:body>
+<h:form id="primeForm">
+<h:outputText value="First 10 prime numbers: " />
+<h:outputText value="#{primeBean.primes}" />
+<br/>
+<h:commandButton value="Load Next 10 Primes" action="#{primeBean.loadNextTenPrimes}">
+<f:ajax render="primeForm" />
+</h:commandButton>
+</h:form>
+</h:body>
+</html>
+@ManagedBean
+@SessionScoped
+public class PrimeBean implements Serializable {
+private List<Integer> primes = new ArrayList<>();
+private int count = 0;
+// Конструктор бина
+public PrimeBean() {
+count = 10;
+getPrimes(count);
+}
+// Метод для генерации простых чисел
+private void getPrimes(int count) {
+primes = …; // получаем count простых чисел и сохраняем в список
+}
+public void loadNextTenPrimes() {
+count += 10;
+primes = getPrimes(count);
+}
+}
+```
 ## Билет 15
 
 ### 1. Валидация JSF. Создание, назначение и виды валидации.
@@ -1180,7 +1412,52 @@ Controller – обрабатывает запрос пользователя,
 1. **Только на Верхнем Уровне**: Не используйте хуки внутри циклов, условий или вложенных функций.
 2. **Только из Функциональных Компонентов React**: Не вызывайте хуки из обычных JavaScript-функций. Используйте их только в функциональных компонентах React или пользовательских хуках.
 
-### 3. 
+### 3. Написать веб-приложение на JSF (xhtml + CDI-бин) со списком студентов и бин, который будет реализовывать логику отчисления студентов. Напротив каждого имени студента должна быть кнопка "отчислить". Обновление должно производиться при помощи AJAX
+
+```html
+public class Student {
+private String name;
+private boolean expelled;
+// Геттеры и сеттеры
+}
+@Named
+@ApplicationScoped
+public class StudentBean implements Serializable {
+private List<Student> students;
+@PostConstruct
+public void init() {
+students = new ArrayList<>();
+}
+public List<Student> getStudents() {
+return students;
+}
+public void expelStudent(Student student) {
+student.setExpelled(true);
+}
+}
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://xmlns.jcp.org/jsf/html"
+xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+…
+</h:head>
+<h:body>
+<h:dataTable id="table" value="#{studentBean.students}" var="student">
+<h:column>
+#{student.name}
+</h:column>
+<h:column>
+<h:commandButton value="Отчислить" action="#{studentBean.expelStudent(student)}">
+<f:ajax render="table" />
+</h:commandButton>
+</h:column>
+<h:column rendered="#{student.expelled}">
+Отчислен
+</h:column>
+</h:dataTable>
+</h:body>
+</html>
+```
 
 
 ## Билет 17
@@ -1423,7 +1700,8 @@ JSF — фреймворк для разработки вебприложени�
 
 ### 2. Spring Web MVC: особенности, реализация, интегрирование с серверами приложений Java/Jakarta EE
 
-### 3.
+### 3. Spring Rest контроллер реализующий калькулятор для целых чисел (4 байта, операции + - * /), должна быть реализована валидация чисел
+
 
 ## Билет 22
 
