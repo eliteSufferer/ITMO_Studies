@@ -1376,7 +1376,72 @@ Controller – обрабатывает запрос пользователя,
 
 Здесь выполняется бизнес-логика, обработка данных из запроса, взаимодействие с Model (сервисы, компоненты доступа к данным и т.д.) и возвращается некоторый результат, обычно в виде имени представления и модели данных для этого представления (объект `ModelAndView`) или `ResponseEntity`.
 
-### 3. 
+### 3. Чат- бот на Ангуляре. На каждое сообщение от пользователя бот должен отвечать «Сам дурак». Нужно указать автора, дату
+
+
+Интерфейс:
+
+```ts
+// message.model.ts
+export interface Message {
+  author: string;
+  content: string;
+  date: Date;
+}
+```
+
+Компонент:
+
+```ts
+@Component({
+  selector: 'app-chatbot',
+  templateUrl: './chatbot.component.html',
+  styleUrls: ['./chatbot.component.css']
+})
+export class ChatbotComponent {
+  messages: Message[] = [];
+  newMessageContent: string = '';
+
+  sendMessage() {
+    if (!this.newMessageContent.trim()) return;
+
+    const userMessage: Message = {
+      author: 'User',
+      content: this.newMessageContent,
+      date: new Date()
+    };
+
+    this.messages.push(userMessage);
+
+    const botResponse: Message = {
+      author: 'Bot',
+      content: 'Сам дурак',
+      date: new Date()
+    };
+
+    setTimeout(() => this.messages.push(botResponse), 1000);
+
+    this.newMessageContent = '';
+  }
+}
+```
+
+Шаблон:
+
+```ts
+<!-- chatbot.component.html -->
+<div class="chat-container">
+  <div class="messages">
+    <div *ngFor="let message of messages">
+      <p><strong>{{ message.author }}</strong> ({{ message.date | date:'short' }}): {{ message.content }}</p>
+    </div>
+  </div>
+  <div class="message-input">
+    <input type="text" [(ngModel)]="newMessageContent">
+    <button (click)="sendMessage()">Отправить</button>
+  </div>
+</div>
+```
 
 ## Билет 16
 
