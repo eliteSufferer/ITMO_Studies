@@ -504,77 +504,106 @@ Spring Boot значительно упрощает процесс разраб�
 
 ### 3. Написать интерфейс форума, где есть темы, сообщения и т.д. Должна быть возможность поставить лайк, написать комментарии. Всё при помощи Rest API. Должно быть минимум 2 React компонента
 
-Список тем:
+Компонент форума:
 
 ```jsx
-const ForumTopics = ({ onSelectTopic }) => {
-  const [topics, setTopics] = useState([]);
+import React, { useState, useEffect } from 'react';
+import Post from './Post';
+
+function Forum() {
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-  fetch('http://example.com/api/topics')
-    .then(response => response.json())
-    .then(data => setTopics(data))
-    .catch(error => console.error('Error fetching topics:', error));
-}, []);
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('https://example.com/api/posts');
+        if (!response.ok) {
+          throw new Error('Ошибка загрузки постов');
+        }
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.error('Ошибка:', error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <div>
-      <h2>Topics</h2>
+      {posts.map(post => (
+        <Post key={post.id} post={post} />
+      ))}
+    </div>
+  );
+}
+
+export default Forum;
+```
+
+Компонент поста:
+
+```jsx
+import React, { useState } from 'react';
+
+function Post({ post }) {
+  const [likes, setLikes] = useState(post.likes);
+  const [comments, setComments] = useState(post.comments);
+  const [newComment, setNewComment] = useState('');
+
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`https://example.com/api/posts/${post.id}/like`, { method: 'POST' });
+      if (!response.ok) {
+        throw new Error('Ошибка при лайке');
+      }
+      setLikes(likes + 1);
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
+
+  const handleComment = async () => {
+    try {
+      const response = await fetch(`https://example.com/api/posts/${post.id}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: newComment })
+      });
+      if (!response.ok) {
+        throw new Error('Ошибка при добавлении комментария');
+      }
+      setComments([...comments, newComment]);
+      setNewComment('');
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h3>{post.title}</h3>
+      <p>{post.content}</p>
+      <button onClick={handleLike}>Like ({likes})</button>
+      <div>
+        <input 
+          type="text" 
+          value={newComment} 
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Написать комментарий..."
+        />
+        <button onClick={handleComment}>Комментировать</button>
+      </div>
       <ul>
-        {topics.map(topic => (
-          <li key={topic.id} onClick={() => onSelectTopic(topic.id)}>
-            {topic.title}
-          </li>
+        {comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
-export default ForumTopics;
-```
-Сообщения и лайки:
-
-```jsx
-import React, { useState, useEffect } from 'react';
-
-const ForumMessages = ({ topicId }) => {
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-  fetch(`http://example.com/api/topics/${topicId}/messages`)
-    .then(response => response.json())
-    .then(data => setMessages(data))
-    .catch(error => console.error('Error fetching messages:', error));
-}, [topicId]);
-
-  const likeMessage = (messageId) => {
-  fetch(`http://example.com/api/messages/${messageId}/like`, { method: 'POST' })
-    .then(response => {
-      if (response.ok) {
-        setMessages(messages.map(msg => 
-          msg.id === messageId ? { ...msg, likes: msg.likes + 1 } : msg
-        ));
-      }
-    })
-    .catch(error => console.error('Error liking message:', error));
-};
-
-  return (
-    <div>
-      <h3>Messages</h3>
-      {messages.map(message => (
-        <div key={message.id}>
-          <p>{message.text}</p>
-          <button onClick={() => likeMessage(message.id)}>Like ({message.likes})</button>
-          {/* Компонент для комментариев можно добавить здесь */}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default ForumMessages;
 ```
 
 ## Билет 7
