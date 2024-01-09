@@ -1625,7 +1625,101 @@ Spring Data JPA (Java Persistence API) — это часть экосистем�
  с JPA/Hibernate**: Spring Data JPA работает поверх стандартных JPA провайдеров, таких как Hibernate, обеспечивая мощные возможности ORM.
 - **Поддержка транзакций**: Управление транзакциями через декларативные аннотации.
 
-### 3. 
+### 3. Интерфейс на React где реализуется постраничный просмотр списка студентов (табельный номер, ФИО, группа), также снабженный кнопками "назад" и "вперёд". Ещё нужен поле поиска, где также принимаются параметры "содержит", "без учета регистра"
+
+Компонент студента
+```jsx
+const Student = ({ student }) => {
+  return (
+    <tr>
+      <td>{student.id}</td>
+      <td>{student.name}</td>
+      <td>{student.group}</td>
+    </tr>
+  );
+};
+```
+Компонент списка студентов
+
+```jsx
+const StudentList = ({ students }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Табельный номер</th>
+          <th>ФИО</th>
+          <th>Группа</th>
+        </tr>
+      </thead>
+      <tbody>
+        {students.map(student => <Student key={student.id} student={student} />)}
+      </tbody>
+    </table>
+  );
+};
+```
+Пагинация:
+
+```jsx
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  return (
+    <div>
+      <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}>Назад</button>
+      <span>Страница {currentPage} из {totalPages}</span>
+      <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}>Вперёд</button>
+            </div>
+    </div>
+  );
+};
+```
+
+Основной компонент:
+
+```jsx
+const App = () => {
+  const [students, setStudents] = useState(initialStudents); // initialStudents - начальный список студентов
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 10;
+
+  const filteredStudents = students.filter(student =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+  const startIndex = (currentPage - 1) * studentsPerPage;
+  const currentStudents = filteredStudents.slice(startIndex, startIndex + studentsPerPage);
+
+  const handlePageChange = pageNumber => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleSearchChange = event => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Возвращаемся на первую страницу при поиске
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="Поиск по ФИО..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+      <StudentList students={currentStudents} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </div>
+  );
+};
+
+export default App;
+```
 
 ## Билет 18
 
@@ -1675,7 +1769,88 @@ JSF — фреймворк для разработки вебприложени�
 - Высокоуровневый фреймворк — сложно реализовывать не предусмотренную авторами функциональность. 
 - Сложность разработки собственных компонентов.
 
-### 3. 
+### 3. Angular. Приложение для регистрации и авторизации. При логине нужен email и пароль, при регистрации email, пароль и время
+
+Сервис:
+
+```ts
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  constructor(private http: HttpClient) {}
+
+  register(email: string, password: string, time: string) {
+    // Здесь должен быть POST-запрос к вашему API для регистрации
+    // Пример: return this.http.post('your_api_endpoint/register', { email, password, time });
+  }
+
+  login(email: string, password: string) {
+    // Здесь должен быть POST-запрос к вашему API для логина
+    // Пример: return this.http.post('your_api_endpoint/login', { email, password });
+  }
+}
+```
+
+Компонент регистрации:
+
+```ts
+@Component({
+  selector: 'app-register',
+  template: `
+    <form (ngSubmit)="onSubmit()">
+      <input type="email" [(ngModel)]="email" name="email" required>
+      <input type="password" [(ngModel)]="password" name="password" required>
+      <input type="text" [(ngModel)]="time" name="time" required>
+      <button type="submit">Register</button>
+    </form>
+  `
+})
+export class RegisterComponent {
+  email = '';
+  password = '';
+  time = '';
+
+  constructor(private authService: AuthService) {}
+
+  onSubmit() {
+    this.authService.register(this.email, this.password, this.time)
+      .subscribe(result => {
+        console.log(result);
+        // Обработка результатов регистрации
+      });
+  }
+}
+```
+
+Компонент авторизации:
+
+```ts
+@Component({
+  selector: 'app-login',
+  template: `
+    <form (ngSubmit)="onSubmit()">
+      <input type="email" [(ngModel)]="email" name="email" required>
+      <input type="password" [(ngModel)]="password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+  `
+})
+export class LoginComponent {
+  email = '';
+  password = '';
+
+  constructor(private authService: AuthService) {}
+
+  onSubmit() {
+    this.authService.login(this.email, this.password)
+      .subscribe(result => {
+        console.log(result);
+        // Обработка результатов логина
+      });
+  }
+}
+```
 
 ## Билет 19
 
@@ -1749,7 +1924,93 @@ JSF — фреймворк для разработки вебприложени�
 
 См. Билет 9
 
-### 3. 
+### 3. Написать REST-контроллер на Spring MVC, предоставляющий CRUD-интерфейс(Creat, Read, Update, Delete) к таблице со списком покемонов. Read должно получать из бд покемона по уникальному номеру, а также получать страницу с покемонами по номеру страницы.
+
+Сущность:
+```java
+@Entity
+public class Pokemon {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String type;
+
+    // Конструкторы, геттеры и сеттеры
+}
+```
+
+Репозиторий:
+```java
+@Repository
+public interface PokemonRepository extends JpaRepository<Pokemon, Long> {
+}
+```
+
+Сервис:
+```java
+@Service
+public class PokemonService {
+    @Autowired
+    private PokemonRepository pokemonRepository;
+
+    public Pokemon save(Pokemon pokemon) {
+        return pokemonRepository.save(pokemon);
+    }
+
+    public Pokemon findById(Long id) {
+        return pokemonRepository.findById(id).orElse(null);
+    }
+
+    public Page<Pokemon> findAll(Pageable pageable) {
+        return pokemonRepository.findAll(pageable);
+    }
+
+    public Pokemon update(Pokemon pokemon) {
+        return pokemonRepository.save(pokemon);
+    }
+
+    public void delete(Long id) {
+        pokemonRepository.deleteById(id);
+    }
+}
+```
+
+Контроллер:
+```java
+@RestController
+@RequestMapping("/pokemons")
+public class PokemonController {
+
+    @Autowired
+    private PokemonService pokemonService;
+
+    @PostMapping
+    public Pokemon create(@RequestBody Pokemon pokemon) {
+        return pokemonService.save(pokemon);
+    }
+
+    @GetMapping("/{id}")
+    public Pokemon read(@PathVariable Long id) {
+        return pokemonService.findById(id);
+    }
+
+    @GetMapping
+    public Page<Pokemon> readAll(Pageable pageable) {
+        return pokemonService.findAll(pageable);
+    }
+
+    @PutMapping
+    public Pokemon update(@RequestBody Pokemon pokemon) {
+        return pokemonService.update(pokemon);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        pokemonService.delete(id);
+    }
+}
+```
 
 ## Билет 21
 
@@ -1765,7 +2026,71 @@ JSF — фреймворк для разработки вебприложени�
 
 ### 2. Spring Web MVC: особенности, реализация, интегрирование с серверами приложений Java/Jakarta EE
 
-### 3. Spring Rest контроллер реализующий калькулятор для целых чисел (4 байта, операции + - * /), должна быть реализована валидация чисел
+Про все писали выше
+
+**Интеграция с серверами приложений Java EE**
+
+Интеграция Spring MVC с серверами приложений Java/Jakarta EE включает в себя несколько ключевых аспектов и общих принципов:
+
+#### 1. Совместимость с Серверами Приложений
+
+Spring MVC разработан так, чтобы быть совместимым со стандартными серверами приложений Java/Jakarta EE, такими как Tomcat, Jetty, WildFly, GlassFish и др. Это означает, что приложения на Spring MVC можно развертывать на этих серверах без необходимости специальной адаптации или конфигурации сервера.
+
+#### 2. Развертывание в виде WAR-файла
+
+- Приложения Spring MVC обычно упаковываются в WAR-файлы (Web Application Archive), которые затем развертываются на сервере приложений.
+- Конфигурация контекста Spring (как XML, так и Java Config) и дескриптор развертывания веб-приложения (`web.xml`) упаковываются внутри WAR-файла.
+
+#### 3. Встроенный и Внешний Серверы Приложений
+
+- **Внешний Сервер**: Spring MVC может использоваться на внешних серверах приложений, где приложение развертывается как стандартный WAR.
+- **Встроенный Сервер**: С появлением Spring Boot стало возможным создание самодостаточных приложений с встроенным сервером приложений (например, Tomcat или Jetty), что упрощает разработку и тестирование.
+
+#### 4. Использование Spring Beans вместо EJB
+
+- Вместо использования Enterprise JavaBeans (EJB) Spring предлагает управляемые бины (Spring Beans), которые работают в контейнере IoC (Inversion of Control) Spring.
+- Это обеспечивает более легковесный и гибкий подход к разработке по сравнению с традиционными EJB.
+
+#### 5. Транзакционное Управление
+
+- Spring предоставляет свои собственные механизмы для управления транзакциями, которые могут быть интегрированы с транзакционными системами серверов приложений.
+- Транзакционное управление в Spring может быть осуществлено декларативно (с помощью аннотаций) или программно.
+
+
+
+### 3.Spring Rest контроллер реализующий калькулятор для целых чисел (4 байта, операции + - * /), должна быть реализована валидация чисел
+
+```java
+@RestController
+@RequestMapping("/calculator")
+@Validated
+public class CalculatorController {
+
+    @GetMapping("/add")
+    public int add(@RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer a,
+                   @RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer b) {
+        return a + b;
+    }
+
+    @GetMapping("/subtract")
+    public int subtract(@RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer a,
+                        @RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer b) {
+        return a - b;
+    }
+
+    @GetMapping("/multiply")
+    public int multiply(@RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer a,
+                        @RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer b) {
+        return a * b;
+    }
+
+    @GetMapping("/divide")
+    public int divide(@RequestParam @NotNull @Min(Integer.MIN_VALUE) @Max(Integer.MAX_VALUE) Integer a,
+                      @RequestParam @NotNull @Min(1) @Max(Integer.MAX_VALUE) Integer b) {
+        return a / b;
+    }
+}
+```
 
 
 ## Билет 22
@@ -1844,8 +2169,59 @@ JSF — фреймворк для разработки вебприложени�
 
 Еще где-то выше было
 
-### 3.
+### 3. 
 
+```java
+@ManagedBean
+@SessionScoped
+public class EducationPlanManager {
+
+    private List<EducationPlan> educationPlans;
+
+    @PostConstruct
+    public void init() {
+        educationPlans = new ArrayList<>();
+        loadEducationPlans();
+    }
+
+    private void loadEducationPlans() {
+        try {
+            InitialContext initialContext = new InitialContext();
+            DataSource dataSource = (DataSource) initialContext.lookup("java:comp/env/jdbc/OrbisPool");
+            
+            try (Connection connection = dataSource.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM Н_УЧЕБНЫЕ_ПЛАНЫ");
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    EducationPlan plan = new EducationPlan();
+                    // Здесь должно быть заполнение объекта plan данными из resultSet
+                    educationPlans.add(plan);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Обработка исключений
+        }
+    }
+
+    public List<EducationPlan> getEducationPlans() {
+        return educationPlans;
+    }
+
+    // Дополнительные методы и класс EducationPlan
+}
+```
+
+Использование:
+```html
+<h:dataTable value="#{educationPlanManager.educationPlans}" var="plan">
+    <h:column>
+        <f:facet name="header">Название колонки</f:facet>
+        #{plan.propertyName}
+    </h:column>
+</h:dataTable>
+```
 
 ## Билет 23
 
@@ -1920,4 +2296,94 @@ Inversion of Control (IoC) в Spring Framework реализуется через
 
 6. **Event Handling**:
    - Spring IoC контейнер также предоставляет поддержку событий и слушателей, что позволяет бинам реагировать на события внутри приложения.
+
+### 3. Написать на React интерфейс интернет-магазина "НВидио", показывающий список товаров с возможностью сортировать их по категории
+
+#### Компонент `Product`
+
+Этот компонент отображает информацию о товаре.
+
+```jsx
+function Product({ product }) {
+  return (
+    <div className="product">
+      <h3>{product.name}</h3>
+      <p>{product.description}</p>
+      {/* Дополнительная информация о продукте */}
+    </div>
+  );
+}
+```
+
+#### Компонент `ProductList`
+
+Этот компонент отображает список товаров.
+
+```jsx
+function ProductList({ products }) {
+  return (
+    <div>
+      {products.map(product => (
+        <Product key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+```
+
+#### Компонент `CategoryFilter`
+
+Этот компонент позволяет фильтровать товары по категории.
+
+```jsx
+function CategoryFilter({ categories, onCategoryChange }) {
+  return (
+    <select onChange={(e) => onCategoryChange(e.target.value)}>
+      <option value="">Все категории</option>
+      {categories.map(category => (
+        <option key={category} value={category}>{category}</option>
+      ))}
+    </select>
+  );
+}
+```
+
+### 3. Состояние и Логика в Главном Компоненте
+
+Ваш главный компонент (`App`) будет управлять состоянием приложения.
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import ProductList from './ProductList';
+import CategoryFilter from './CategoryFilter';
+
+function App() {
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Здесь должен быть код для получения данных о товарах
+    // setProducts(полученные_товары);
+    // setCategories(извлечь_уникальные_категории_из_товаров);
+  }, []);
+
+  const handleCategoryChange = category => {
+    if (category) {
+      setFilteredProducts(products.filter(p => p.category === category));
+    } else {
+      setFilteredProducts(products);
+    }
+  };
+
+  return (
+    <div>
+      <CategoryFilter categories={categories} onCategoryChange={handleCategoryChange} />
+      <ProductList products={filteredProducts.length > 0 ? filteredProducts : products} />
+    </div>
+  );
+}
+
+export default App;
+```
 
