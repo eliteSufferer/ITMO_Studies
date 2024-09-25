@@ -79,16 +79,38 @@ def calculate_confidence_interval_manual(data, mean_value, confidence_level, ind
     margin_of_error = t_value * se
     return mean_value - margin_of_error, mean_value + margin_of_error
 
+def calculate_percent_deviation(sample_val, ideal_val):
+    return (abs(sample_val - ideal_val) / ideal_val) * 100
+
+
 # Относительные отклонения от эталонных значений
-def calculate_relative_deviation(data, best_value):
-    return [(x - best_value) / best_value * 100 for x in data]
+def calculate_relative_deviation(sequence, mean, variance, standard_deviation, intervals):
+    ideal_mean = calculate_mean(sequence)
+    ideal_variance = calculate_variance(sequence, ideal_mean)
+    ideal_std_dev = calculate_std_dev(ideal_variance)
+    confidence_levels = [0.9, 0.95, 0.99]
+    idx = 0
+    ideal_intervals = {}
+    for confidence in confidence_levels:
+        ideal_intervals[confidence] = calculate_confidence_interval_manual(sequence, ideal_mean, confidence, idx)
+        idx += 1
+
+    print("Отклонение МО: ", calculate_percent_deviation(mean, ideal_mean))
+    print("Отклонение дисперсии: ", calculate_percent_deviation(variance, ideal_variance))
+    print("Отклонение СКО: ", calculate_percent_deviation(standard_deviation, ideal_std_dev))
+
+    print("Отклонение ДИ 90%: ", calculate_percent_deviation(sum(intervals.get(0.9)) / 2, sum(ideal_intervals.get(0.9)) / 2))
+    print("Отклонение ДИ 95%: ", calculate_percent_deviation(sum(intervals.get(0.95)) / 2, sum(ideal_intervals.get(0.95)) / 2))
+    print("Отклонение ДИ 99%: ", calculate_percent_deviation(sum(intervals.get(0.99)) / 2, sum(ideal_intervals.get(0.99)) / 2))
+
+
 
 def draw_values_plot(data):
     plt.figure(figsize=(10, 5))
     plt.plot(data)
-    plt.title("Sequence of Numbers")
-    plt.xlabel("Index")
-    plt.ylabel("Value")
+    plt.title("График значений")
+    plt.xlabel("Индекс")
+    plt.ylabel("Значение")
     plt.grid(True)
     plt.show()
 
@@ -140,7 +162,7 @@ def task_autocorrelation_analysis(data, max_lag=20):
     return autocorrelations
 
 
-def approximate_law(sko, mean):
+def approximate_law(data, sko, mean):
     # Рассчитаем коэффициент вариации
     coefficient_of_variation = sko / mean
 
@@ -150,8 +172,8 @@ def approximate_law(sko, mean):
     # В данной задаче мы подберем параметры для визуализации и аппроксимации.
 
     # Параметры для двух экспоненциальных компонент (примитивная гиперэкспоненциальная аппроксимация)
-    lambda_1 = 1 / (mean_value / 2)  # Для одной компоненты возьмем среднее значение меньшее вдвое
-    lambda_2 = 1 / (mean_value * 1.5)  # Для другой компоненты возьмем среднее значение большее в 1.5 раза
+    lambda_1 = 1 / (mean / 2)  # Для одной компоненты возьмем среднее значение меньшее вдвое
+    lambda_2 = 1 / (mean * 1.5)  # Для другой компоненты возьмем среднее значение большее в 1.5 раза
 
     # Смешанное распределение
     def hyperexp_pdf(x, p1 = 0.5):
@@ -175,7 +197,7 @@ def approximate_law(sko, mean):
     return lambda_1, lambda_2
 
 # Генерация выборки из гиперэкспоненциального распределения
-def hyperexponential_sample(p1, p2, lambda1, lambda2, size=1000):
+def hyperexponential_sample(p1, p2, lambda1, lambda2, size=300):
     # Генерация случайных чисел для смешивания
     uniform_random = np.random.uniform(0, 1, size)
 
@@ -185,11 +207,58 @@ def hyperexponential_sample(p1, p2, lambda1, lambda2, size=1000):
                                    np.random.exponential(1 / lambda2, size))
     return exponential_samples
 
+def count_correlation_coefficient(sequence_1, sequence_2):
+    n = len(sequence_1)
 
-for idx, val in enumerate(slices):
+    # Вычислим необходимые суммы
+    sum_x = sum(sequence_1)
+    sum_y = sum(sequence_2)
+    sum_x2 = sum([x ** 2 for x in sequence_1])
+    sum_y2 = sum([y ** 2 for y in sequence_2])
+    sum_xy = sum([x * y for x, y in zip(sequence_1, sequence_2)])
+
+    # Применим формулу для корреляции Пирсона
+    numerator = n * sum_xy - sum_x * sum_y
+    denominator = ((n * sum_x2 - sum_x ** 2) * (n * sum_y2 - sum_y ** 2)) ** 0.5
+
+    if denominator != 0:
+        correlation = numerator / denominator
+    else:
+        correlation = 0
+
+    return correlation
+
+def perform_comparison(sequence_1, sequence_2):
+    plt.figure(figsize=(10, 5))
+
+    # График значений
+    plt.plot(sequence_1, label='Основаня последовательность')
+    plt.plot(sequence_2, label='Сгенерированная последовательность')
+
+    plt.title('Сравнение: график значений')
+    plt.xlabel('Индекс')
+    plt.ylabel('Значение')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Гистограммы
+    plt.figure(figsize=(10, 5))
+
+    plt.hist(sequence_1, alpha=0.5, label='Основаня последовательность', bins=np.arange(1, 12) - 0.5)
+    plt.hist(sequence_2, alpha=0.5, label='Сгенерированная последовательность', bins=np.arange(1, 12) - 0.5)
+
+    plt.title('Сравнение: гистограммы')
+    plt.xlabel('Значение')
+    plt.ylabel('Частота')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def moments_calculation(sequence, val):
     print(f'_____________{val}_____________')
-    data = big_data[:val]
-
+    data = sequence[:val]
 
     mean_value = calculate_mean(data)
     print(f"Математическое ожидание: {mean_value}")
@@ -208,14 +277,30 @@ for idx, val in enumerate(slices):
 
     # Доверительные интервалы для разных уровней доверия
     confidence_levels = [0.9, 0.95, 0.99]
+    intervals = {}
     for confidence in confidence_levels:
         lower_bound, upper_bound = calculate_confidence_interval_manual(data, mean_value, confidence, idx)
+        intervals[confidence] = lower_bound, upper_bound
         print(f"Доверительный интервал ({int(confidence * 100)}%): ({lower_bound}, {upper_bound})")
 
-    # Относительное отклонение от эталонных значений (например, последних трех)
-    best_value = calculate_mean(data[-3:])
-    relative_deviation = calculate_relative_deviation(data, best_value)
-    print(f"Относительные отклонения от эталонных значений: {relative_deviation}")
+    # Относительное отклонение от эталонных значений
+    calculate_relative_deviation(sequence, mean_value, variance_value, std_dev_value, intervals)
+    return  mean_value, std_dev_value
+
+
+def hyperexponential_generator(lambda1, lambda2):
+    # Генерация выборки на основе гиперэкспоненциального распределения
+    generated_samples = hyperexponential_sample(0.5, 0.5, lambda1, lambda2, 300)
+    print('--------Сгенерированная последовательность--------')
+    print(', '.join(map(str, generated_samples)))
+    return generated_samples
+
+
+
+print('--------Основная последовательность--------')
+for idx, val in enumerate(slices):
+    data = big_data[:val]
+    mean_value, std_dev_value = moments_calculation(big_data, val)
 
     # График значений
     draw_values_plot(data)
@@ -226,19 +311,18 @@ for idx, val in enumerate(slices):
     # Автокорреляционный анализ
     task_autocorrelation_analysis(data)
 
-    # Аппроксимация закона распределения, получе
-    lambda1, lambda2 = approximate_law(std_dev_value, mean_value)
+    # Аппроксимация закона распределения
+    lambda1, lambda2 = approximate_law(data, std_dev_value, mean_value)
 
-    # Генератор случайных чисел
-    # Генерация выборки на основе гиперэкспоненциального распределения
-    generated_samples = hyperexponential_sample(0.5, 0.5, lambda1, lambda2, size=1000)
 
-    print(generated_samples)
+    # Запуск генератора случайных чисел
+    if val == 300:
+        generated_samples = hyperexponential_generator(lambda1, lambda2)
+        for idx, val in enumerate(slices):
+            moments_calculation(generated_samples, val)
 
-    # Визуализация гистограммы сгенерированных данных
-    plt.hist(generated_samples, bins=50, density=True, alpha=0.6, color='g')
-    plt.title(f'Гистограмма гиперэкспоненциального распределения для выборки {val}')
-    plt.xlabel('Значения')
-    plt.ylabel('Плотность')
-    plt.grid(True)
-    plt.show()
+        task_autocorrelation_analysis(generated_samples)
+        correlation_coefficient = count_correlation_coefficient(big_data, generated_samples)
+        print("Коэффициент корреляции: ", correlation_coefficient)
+        # print("Коэффициент корреляции (проверка через numpy): ", np.corrcoef(big_data, generated_samples)[0, 1])
+        perform_comparison(big_data, generated_samples)
