@@ -84,24 +84,24 @@ def calculate_percent_deviation(sample_val, ideal_val):
 
 
 # Относительные отклонения от эталонных значений
-def calculate_relative_deviation(sequence, mean, variance, standard_deviation, intervals):
+def calculate_relative_deviation(sequence, mean, variance, standard_deviation, intervals, coef_variation):
     ideal_mean = calculate_mean(sequence)
     ideal_variance = calculate_variance(sequence, ideal_mean)
     ideal_std_dev = calculate_std_dev(ideal_variance)
+    ideal_coef_variation = calculate_coef_variation(ideal_std_dev, ideal_mean)
     confidence_levels = [0.9, 0.95, 0.99]
-    idx = 0
     ideal_intervals = {}
     for confidence in confidence_levels:
-        ideal_intervals[confidence] = calculate_confidence_interval_manual(sequence, ideal_mean, confidence, idx)
-        idx += 1
+        ideal_intervals[confidence] = calculate_confidence_interval_manual(sequence, ideal_mean, confidence, 5)
 
     print("Отклонение МО: ", calculate_percent_deviation(mean, ideal_mean))
     print("Отклонение дисперсии: ", calculate_percent_deviation(variance, ideal_variance))
     print("Отклонение СКО: ", calculate_percent_deviation(standard_deviation, ideal_std_dev))
 
-    print("Отклонение ДИ 90%: ", calculate_percent_deviation(sum(intervals.get(0.9)) / 2, sum(ideal_intervals.get(0.9)) / 2))
-    print("Отклонение ДИ 95%: ", calculate_percent_deviation(sum(intervals.get(0.95)) / 2, sum(ideal_intervals.get(0.95)) / 2))
-    print("Отклонение ДИ 99%: ", calculate_percent_deviation(sum(intervals.get(0.99)) / 2, sum(ideal_intervals.get(0.99)) / 2))
+    print("Отклонение ДИ 90%: ", round(calculate_percent_deviation(intervals.get(0.9)[1] - mean, ideal_intervals.get(0.9)[1] - ideal_mean), 3))
+    print("Отклонение ДИ 95%: ", round(calculate_percent_deviation(intervals.get(0.95)[1] - mean, ideal_intervals.get(0.95)[1] - ideal_mean), 3))
+    print("Отклонение ДИ 99%: ", round(calculate_percent_deviation(intervals.get(0.99)[1] - mean, ideal_intervals.get(0.99)[1] - ideal_mean), 3))
+    print("Отклонение коэффициента вариации:", calculate_percent_deviation(coef_variation, ideal_coef_variation))
 
 
 
@@ -139,6 +139,7 @@ def perform_autocorrelation(data, max_lag):
     for lag in range(1, max_lag + 1):
         # Используем numpy для среза данных и умножения массивов
         numerator = sum((data[i] - mean_value) * (data[i + lag] - mean_value) for i in range(n - lag))
+        print(numerator / variance)
         autocorrelations.append(numerator / variance)
 
     return autocorrelations
@@ -165,8 +166,6 @@ def task_autocorrelation_analysis(data, max_lag=20):
 def approximate_law(data, sko, mean):
     # Рассчитаем коэффициент вариации
     coefficient_of_variation = sko / mean
-
-    print("Коэффициент вариации: ", coefficient_of_variation)
 
     # Поскольку C_v > 1, мы используем гиперэкспоненциальное распределение (простая аппроксимация)
     # В данной задаче мы подберем параметры для визуализации и аппроксимации.
@@ -281,10 +280,10 @@ def moments_calculation(sequence, val):
     for confidence in confidence_levels:
         lower_bound, upper_bound = calculate_confidence_interval_manual(data, mean_value, confidence, idx)
         intervals[confidence] = lower_bound, upper_bound
-        print(f"Доверительный интервал ({int(confidence * 100)}%): ({lower_bound}, {upper_bound})")
+        print(f"Доверительный интервал ({int(confidence * 100)}%): ({lower_bound}, {upper_bound}) (+-{upper_bound - mean_value})")
 
     # Относительное отклонение от эталонных значений
-    calculate_relative_deviation(sequence, mean_value, variance_value, std_dev_value, intervals)
+    calculate_relative_deviation(sequence, mean_value, variance_value, std_dev_value, intervals, coef_variation)
     return  mean_value, std_dev_value
 
 
